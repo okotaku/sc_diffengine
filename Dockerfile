@@ -19,9 +19,9 @@ COPY ./ /modules
 RUN pip install --upgrade pip
 
 # Install xformers
-RUN pip install ninja
-RUN export TORCH_CUDA_ARCH_LIST="8.6 9.0+PTX" MAX_JOBS=8 && \
-    pip install -v -U git+https://github.com/facebookresearch/xformers.git@v0.0.24#egg=xformers
+# RUN pip install ninja
+# RUN export TORCH_CUDA_ARCH_LIST="8.6 9.0+PTX" MAX_JOBS=8 && \
+#     pip install -v -U git+https://github.com/facebookresearch/xformers.git@v0.0.24#egg=xformers
 
 # Install modules
 RUN pip install . && \

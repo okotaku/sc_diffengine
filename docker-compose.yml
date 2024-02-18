@@ -1,10 +1,10 @@
 version: "3.8"
 services:
-  template:
+  scdiffengine:
     build: ./
     environment:
       - PYTHONPATH=/workspace:$PYTHONPATH
-    container_name: template
+    container_name: scdiffengine
     ipc: host
     tty: true
     volumes:

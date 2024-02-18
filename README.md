@@ -1,18 +1,18 @@
-# DiffEngine
+# SCDiffEngine
 
-[![build](https://github.com/okotaku/template/actions/workflows/build.yml/badge.svg)](https://github.com/okotaku/template/actions/workflows/build.yml)
-[![Docs](https://img.shields.io/badge/docs-latest-blue)](https://template.readthedocs.io/en/latest/)
-[![license](https://img.shields.io/github/license/okotaku/template.svg)](https://github.com/okotaku/template/blob/main/LICENSE)
-[![open issues](https://isitmaintained.com/badge/open/okotaku/template.svg)](https://github.com/okotaku/template/issues)
+[![build](https://github.com/okotaku/scdiffengine/actions/workflows/build.yml/badge.svg)](https://github.com/okotaku/scdiffengine/actions/workflows/build.yml)
+[![Docs](https://img.shields.io/badge/docs-latest-blue)](https://scdiffengine.readthedocs.io/en/latest/)
+[![license](https://img.shields.io/github/license/okotaku/scdiffengine.svg)](https://github.com/okotaku/scdiffengine/blob/main/LICENSE)
+[![open issues](https://isitmaintained.com/badge/open/okotaku/scdiffengine.svg)](https://github.com/okotaku/scdiffengine/issues)
 [![Linting: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
 
-[📘 Documentation](https://template0.readthedocs.io/en/latest/) |
-[🤔 Reporting Issues](https://github.com/okotaku/template/issues/new/choose)
+[📘 Documentation](https://scdiffengine0.readthedocs.io/en/latest/) |
+[🤔 Reporting Issues](https://github.com/okotaku/scdiffengine/issues/new/choose)
 
 ## 📄 Table of Contents
 
-- [DiffEngine](#diffengine)
+- [SCDiffEngine](#scdiffengine)
   - [📄 Table of Contents](#-table-of-contents)
   - [📖 Introduction 🔝](#-introduction-)
   - [🛠️ Installation 🔝](#️-installation-)
@@ -26,7 +26,7 @@
 
 ## 📖 Introduction [🔝](#-table-of-contents)
 
-DiffEngine is the open-source toolbox for training state-of-the-art Diffusion Models. Packed with advanced features including diffusers and MMEngine, DiffEngine empowers both seasoned experts and newcomers in the field to efficiently create and enhance diffusion models. Stay at the forefront of innovation with our cutting-edge platform, accelerating your journey in Diffusion Models training.
+SCDiffEngine is the open-source toolbox for training state-of-the-art Diffusion Models. Packed with advanced features including diffusers and MMEngine, SCDiffEngine empowers both seasoned experts and newcomers in the field to efficiently create and enhance diffusion models. Stay at the forefront of innovation with our cutting-edge platform, accelerating your journey in Diffusion Models training.
 
 1. **Training state-of-the-art Diffusion Models**: Empower your projects with state-of-the-art Diffusion Models. We can use Stable Diffusion, Stable Diffusion XL, DreamBooth, LoRA etc.
 2. **Unified Config System and Module Designs**: Thanks to MMEngine, our platform boasts a unified configuration system and modular designs that streamline your workflow. Easily customize hyperparameters, loss functions, and other crucial settings while maintaining a structured and organized project environment.
@@ -34,19 +34,19 @@ DiffEngine is the open-source toolbox for training state-of-the-art Diffusion Mo
 
 ## 🛠️ Installation [🔝](#-table-of-contents)
 
-Before installing DiffEngine, please ensure that PyTorch >= v2.0 has been successfully installed following the [official guide](https://pytorch.org/get-started/locally/).
+Before installing SCDiffEngine, please ensure that PyTorch >= v2.0 has been successfully installed following the [official guide](https://pytorch.org/get-started/locally/).
 
-Install DiffEngine
+Install SCDiffEngine
 
 ```
-pip install git+https://github.com/okotaku/diffengine.git
+pip install git+https://github.com/okotaku/scdiffengine.git
 ```
 
 ## 👨‍🏫 Get Started [🔝](#-table-of-contents)
 
-DiffEngine makes training easy through its pre-defined configs. These configs provide a streamlined way to start your training process. Here's how you can get started using one of the pre-defined configs:
+SCDiffEngine makes training easy through its pre-defined configs. These configs provide a streamlined way to start your training process. Here's how you can get started using one of the pre-defined configs:
 
-1. **Choose a config**: You can find various pre-defined configs in the [`configs`](diffengine/configs/) directory of the DiffEngine repository. For example, if you wish to train a DreamBooth model using the Stable Diffusion algorithm, you can use the [`configs/dreambooth/stable_diffusion_v15_dreambooth_lora_dog.py`](diffengine/configs/dreambooth/stable_diffusion_v15_dreambooth_lora_dog.py).
+1. **Choose a config**: You can find various pre-defined configs in the [`configs`](diffengine/configs/) directory of the SCDiffEngine repository. For example, if you wish to train a DreamBooth model using the Stable Diffusion algorithm, you can use the [`configs/dreambooth/stable_diffusion_v15_dreambooth_lora_dog.py`](diffengine/configs/dreambooth/stable_diffusion_v15_dreambooth_lora_dog.py).
 
 2. **Start Training**: Open a terminal and run the following command to start training with the selected config:
 
@@ -183,7 +183,7 @@ This project is released under the [Apache 2.0 license](LICENSE).
 
 ## 🖊️ Citation [🔝](#-table-of-contents)
 
-If DiffEngine is helpful to your research, please cite it as below.
+If SCDiffEngine is helpful to your research, please cite it as below.
 
 ```
 @misc{diffengine2023,

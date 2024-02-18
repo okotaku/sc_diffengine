@@ -11,10 +11,10 @@ from torch import nn
 from diffengine.models.editors.controlnet.data_preprocessor import (
     SDControlNetDataPreprocessor,
 )
-from diffengine.models.editors.stable_diffusion import StableDiffusion
+from diffengine.models.editors.stable_cascade import StableCascade
 
 
-class StableDiffusionControlNet(StableDiffusion):
+class StableDiffusionControlNet(StableCascade):
     """Stable Diffusion ControlNet.
 
     Args:
@@ -67,7 +67,7 @@ class StableDiffusionControlNet(StableDiffusion):
 
         super().__init__(
             *args,
-            unet_lora_config=unet_lora_config,
+            decoder_lora_config=unet_lora_config,
             text_encoder_lora_config=text_encoder_lora_config,
             finetune_text_encoder=finetune_text_encoder,
             data_preprocessor=data_preprocessor,

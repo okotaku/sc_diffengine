@@ -8,8 +8,8 @@ from mmengine.registry import MODELS
 from torch.optim import SGD
 from transformers import CLIPTextModel, CLIPTokenizer
 
-from diffengine.models.editors import StableDiffusion
-from diffengine.models.editors.stable_diffusion.data_preprocessor import (
+from diffengine.models.editors import StableCascade
+from diffengine.models.editors.stable_cascade.data_preprocessor import (
     SDDataPreprocessor,
 )
 from diffengine.models.losses import DeBiasEstimationLoss, L2Loss, SNRL2Loss
@@ -20,7 +20,7 @@ class TestStableDiffusion(TestCase):
     def _get_config(self) -> dict:
         base_model = "diffusers/tiny-stable-diffusion-torch"
         return dict(
-            type=StableDiffusion,
+            type=StableCascade,
              model=base_model,
              tokenizer=dict(type=CLIPTokenizer.from_pretrained,
                             pretrained_model_name_or_path=base_model,

@@ -12,10 +12,10 @@ from torch import nn
 from diffengine.models.editors.inpaint.data_preprocessor import (
     SDInpaintDataPreprocessor,
 )
-from diffengine.models.editors.stable_diffusion import StableDiffusion
+from diffengine.models.editors.stable_cascade import StableCascade
 
 
-class StableDiffusionInpaint(StableDiffusion):
+class StableDiffusionInpaint(StableCascade):
     """Stable Diffusion Inpaint.
 
     Args:

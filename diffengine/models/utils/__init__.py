@@ -1,10 +1,5 @@
 from .noise import OffsetNoise, PyramidNoise, WhiteNoise
-from .timesteps import (
-    EarlierTimeSteps,
-    LaterTimeSteps,
-    RangeTimeSteps,
-    TimeSteps,
-)
+from .timesteps import WuerstchenRandomTimeSteps
 
 __all__ = ["WhiteNoise", "OffsetNoise", "PyramidNoise",
-           "TimeSteps", "LaterTimeSteps", "EarlierTimeSteps", "RangeTimeSteps"]
+           "WuerstchenRandomTimeSteps"]

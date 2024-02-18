@@ -1,15 +1,15 @@
 from diffusers import AutoencoderKL, DDPMScheduler, UNet2DConditionModel
 from transformers import CLIPTextModel, CLIPTokenizer
 
-from diffengine.models.editors import StableDiffusion
-from diffengine.models.editors.stable_diffusion.data_preprocessor import (
+from diffengine.models.editors import StableCascade
+from diffengine.models.editors.stable_cascade.data_preprocessor import (
    SDDataPreprocessor,
 )
 from diffengine.models.losses import L2Loss
 
 base_model = "diffusers/tiny-stable-diffusion-torch"
 model = dict(
-            type=StableDiffusion,
+            type=StableCascade,
              model=base_model,
              tokenizer=dict(type=CLIPTokenizer.from_pretrained,
                             subfolder="tokenizer"),
