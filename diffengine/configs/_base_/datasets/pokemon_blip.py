@@ -3,12 +3,12 @@ from mmengine.dataset import DefaultSampler
 
 from diffengine.datasets import HFDataset
 from diffengine.datasets.transforms import (
+    CLIPImageProcessor,
     PackInputs,
     RandomCrop,
     RandomHorizontalFlip,
-    TorchVisonTransformWrapper,
-    CLIPImageProcessor,
     RandomTextDrop,
+    TorchVisonTransformWrapper,
 )
 from diffengine.engine.hooks import SDCheckpointHook, VisualizationHook
 

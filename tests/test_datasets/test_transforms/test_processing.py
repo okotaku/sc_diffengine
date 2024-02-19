@@ -13,11 +13,11 @@ from torchvision import transforms
 
 from diffengine.datasets import (
     CenterCrop,
+    CLIPImageProcessor,
     MultiAspectRatioResizeCenterCrop,
     RandomCrop,
     RandomHorizontalFlip,
     TorchVisonTransformWrapper,
-    CLIPImageProcessor,
 )
 
 

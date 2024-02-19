@@ -2,11 +2,10 @@ from diffusers import DDPMWuerstchenScheduler
 from diffusers.pipelines.stable_cascade.modeling_stable_cascade_common import (
     StableCascadeUnet,
 )
-from diffusers.pipelines.wuerstchen.modeling_paella_vq_model import (
-    PaellaVQModel,
-)
 from transformers import (
-    CLIPTextModelWithProjection, CLIPTokenizer, CLIPVisionModelWithProjection
+    CLIPTextModelWithProjection,
+    CLIPTokenizer,
+    CLIPVisionModelWithProjection,
 )
 
 from diffengine.models.editors import StableCascade

@@ -5,11 +5,11 @@ from .inpaint_processing import GetMaskedImage, MaskToTensor
 from .loading import LoadMask
 from .processing import (
     CenterCrop,
+    CLIPImageProcessor,
     MultiAspectRatioResizeCenterCrop,
     RandomCrop,
     RandomHorizontalFlip,
     TorchVisonTransformWrapper,
-    CLIPImageProcessor,
 )
 from .text_processing import AddConstantCaption, RandomTextDrop
 from .wrappers import RandomChoice

@@ -385,7 +385,6 @@ class RandomHorizontalFlip(BaseTransform):
         return results
 
 
-@TRANSFORMS.register_module()
 class CLIPImageProcessor(BaseTransform):
     """CLIPImageProcessor.
 
@@ -394,6 +393,7 @@ class CLIPImageProcessor(BaseTransform):
         key (str): `key` to apply augmentation from results. Defaults to 'img'.
         output_key (str): `output_key` after applying augmentation from
             results. Defaults to 'clip_img'.
+
     """
 
     def __init__(self, key: str = "img",
@@ -414,6 +414,7 @@ class CLIPImageProcessor(BaseTransform):
         Args:
         ----
             results (dict): The result dict.
+
         """
         assert not isinstance(results[self.key], list), (
             "CLIPImageProcessor only support single image.")
