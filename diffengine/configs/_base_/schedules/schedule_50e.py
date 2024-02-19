@@ -4,7 +4,7 @@ from torch.optim import AdamW
 
 optim_wrapper = dict(
     type=AmpOptimWrapper,
-    dtype="float16",
+    dtype="bfloat16",
     optimizer=dict(type=AdamW, lr=1e-5, weight_decay=1e-2),
     clip_grad=dict(max_norm=1.0))
 

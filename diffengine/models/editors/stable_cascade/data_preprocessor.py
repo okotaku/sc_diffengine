@@ -2,8 +2,8 @@ import torch
 from mmengine.model.base_model.data_preprocessor import BaseDataPreprocessor
 
 
-class SDDataPreprocessor(BaseDataPreprocessor):
-    """SDDataPreprocessor."""
+class SCDataPreprocessor(BaseDataPreprocessor):
+    """Stable Cascade DataPreprocessor."""
 
     def forward(
             self,
@@ -27,4 +27,6 @@ class SDDataPreprocessor(BaseDataPreprocessor):
 
         """
         data["inputs"]["img"] = torch.stack(data["inputs"]["img"])
+        if "clip_img" in data["inputs"]:
+            data["inputs"]["clip_img"] = torch.stack(data["inputs"]["clip_img"])
         return super().forward(data)

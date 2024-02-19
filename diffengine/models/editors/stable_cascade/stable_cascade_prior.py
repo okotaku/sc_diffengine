@@ -18,7 +18,7 @@ from diffengine.models.losses import L2Loss
 from diffengine.models.utils import WhiteNoise, WuerstchenRandomTimeSteps
 
 
-class StableCascade(BaseModel):
+class StableCascadePrior(BaseModel):
     """Stable Cascade.
 
     Args:
@@ -26,8 +26,8 @@ class StableCascade(BaseModel):
         tokenizer (dict): Config of tokenizer.
         scheduler (dict): Config of scheduler.
         text_encoder (dict): Config of text encoder.
-        vqgan (dict): Config of vqgan.
-        decoder (dict): Config of decoder.
+        image_encoder (dict): Config of image encoder.
+        prior (dict): Config of prior.
         effnet (dict): Config of effnet.
         prior_model (str): pretrained model name of stable cascade.
             Defaults to '"stabilityai/stable-cascade-prior"'.
@@ -35,7 +35,7 @@ class StableCascade(BaseModel):
             Defaults to 'stabilityai/stable-cascade'.
         loss (dict): Config of loss. Defaults to
             ``dict(type='L2Loss', loss_weight=1.0)``.
-        decoder_lora_config (dict, optional): The LoRA config dict for Decoder.
+        prior_lora_config (dict, optional): The LoRA config dict for prior.
             example. dict(type="LoRA", r=4). `type` is chosen from `LoRA`,
             `LoHa`, `LoKr`. Other config are same as the config of PEFT.
             https://github.com/huggingface/peft
@@ -72,13 +72,13 @@ class StableCascade(BaseModel):
         tokenizer: dict,
         scheduler: dict,
         text_encoder: dict,
-        vqgan: dict,
-        decoder: dict,
+        image_encoder: dict,
+        prior: dict,
         effnet: dict,
         prior_model: str = "stabilityai/stable-cascade-prior",
         model: str = "stabilityai/stable-cascade",
         loss: dict | None = None,
-        decoder_lora_config: dict | None = None,
+        prior_lora_config: dict | None = None,
         text_encoder_lora_config: dict | None = None,
         data_preprocessor: dict | nn.Module | None = None,
         noise_generator: dict | None = None,
@@ -101,11 +101,11 @@ class StableCascade(BaseModel):
             timesteps_generator = {}
         super().__init__(data_preprocessor=data_preprocessor)
         if (
-            decoder_lora_config is not None) and (
+            prior_lora_config is not None) and (
                 text_encoder_lora_config is not None) and (
                     not finetune_text_encoder):
                 print_log(
-                    "You are using LoRA for Decoder and text encoder. "
+                    "You are using LoRA for prior and text encoder. "
                     "But you are not set `finetune_text_encoder=True`. "
                     "We will set `finetune_text_encoder=True` for you.")
                 finetune_text_encoder = True
@@ -114,15 +114,15 @@ class StableCascade(BaseModel):
                 "If you want to use LoRA for text encoder, "
                 "you should set finetune_text_encoder=True."
             )
-        if finetune_text_encoder and decoder_lora_config is not None:
+        if finetune_text_encoder and prior_lora_config is not None:
             assert text_encoder_lora_config is not None, (
-                "If you want to finetune text encoder with LoRA Decoder, "
+                "If you want to finetune text encoder with LoRA prior, "
                 "you should set text_encoder_lora_config."
             )
 
         self.prior_model = prior_model
         self.model = model
-        self.decoder_lora_config = deepcopy(decoder_lora_config)
+        self.prior_lora_config = deepcopy(prior_lora_config)
         self.text_encoder_lora_config = deepcopy(text_encoder_lora_config)
         self.finetune_text_encoder = finetune_text_encoder
         self.gradient_checkpointing = gradient_checkpointing
@@ -139,18 +139,18 @@ class StableCascade(BaseModel):
 
         self.tokenizer = MODELS.build(
             tokenizer,
-            default_args={"pretrained_model_name_or_path": model})
+            default_args={"pretrained_model_name_or_path": prior_model})
         self.scheduler = MODELS.build(scheduler)
 
         self.text_encoder = MODELS.build(
             text_encoder,
-            default_args={"pretrained_model_name_or_path": model})
-        self.vqgan = MODELS.build(
-            vqgan,
-            default_args={"pretrained_model_name_or_path": model})
-        self.decoder = MODELS.build(
-            decoder,
-            default_args={"pretrained_model_name_or_path": model})
+            default_args={"pretrained_model_name_or_path": prior_model})
+        self.image_encoder = MODELS.build(
+            image_encoder,
+            default_args={"pretrained_model_name_or_path": prior_model})
+        self.prior = MODELS.build(
+            prior,
+            default_args={"pretrained_model_name_or_path": prior_model})
         self.effnet = MODELS.build(effnet)
         self.noise_generator = MODELS.build(
             noise_generator,
@@ -171,10 +171,10 @@ class StableCascade(BaseModel):
                 self.text_encoder, text_encoder_lora_config)
             self.text_encoder.print_trainable_parameters()
 
-        if self.decoder_lora_config is not None:
-            decoder_lora_config = create_peft_config(self.decoder_lora_config)
-            self.decoder = get_peft_model(self.decoder, decoder_lora_config)
-            self.decoder.print_trainable_parameters()
+        if self.prior_lora_config is not None:
+            prior_lora_config = create_peft_config(self.prior_lora_config)
+            self.prior = get_peft_model(self.prior, prior_lora_config)
+            self.prior.print_trainable_parameters()
 
     def prepare_model(self) -> None:
         """Prepare model for training.
@@ -182,14 +182,14 @@ class StableCascade(BaseModel):
         Disable gradient for some models.
         """
         if self.gradient_checkpointing:
-            self.decoder.enable_gradient_checkpointing()
+            self.prior.enable_gradient_checkpointing()
             if self.finetune_text_encoder:
                 self.text_encoder.gradient_checkpointing_enable()
 
-        self.vqgan.requires_grad_(requires_grad=False)
-        print_log("Set VQGAN untrainable.", "current")
         self.effnet.requires_grad_(requires_grad=False)
         print_log("Set EffNet untrainable.", "current")
+        self.image_encoder.requires_grad_(requires_grad=False)
+        print_log("Set Image Encoder untrainable.", "current")
         if not self.finetune_text_encoder:
             self.text_encoder.requires_grad_(requires_grad=False)
             print_log("Set Text Encoder untrainable.", "current")
@@ -199,7 +199,7 @@ class StableCascade(BaseModel):
         if self.enable_xformers:
             from diffusers.utils.import_utils import is_xformers_available
             if is_xformers_available():
-                self.decoder.enable_xformers_memory_efficient_attention()
+                self.prior.enable_xformers_memory_efficient_attention()
             else:
                 msg = "Please install xformers to enable memory efficient attention."
                 raise ImportError(
@@ -249,15 +249,14 @@ class StableCascade(BaseModel):
         """
         prior = StableCascadePriorPipeline.from_pretrained(
             self.prior_model,
+            prior=self.prior,
             torch_dtype=(torch.bloat16 if self.device != torch.device("cpu")
                          else torch.float32),
         )
         decoder = StableCascadeDecoderPipeline.from_pretrained(
             self.model,
-            vqgan=self.vqgan,
             text_encoder=self.text_encoder,
             tokenizer=self.tokenizer,
-            decoder=self.decoder,
             torch_dtype=(torch.float16 if self.device != torch.device("cpu")
                          else torch.float32),
         )
@@ -338,17 +337,6 @@ class StableCascade(BaseModel):
             input_noise = noise
         return self.scheduler.add_noise(latents, input_noise, timesteps)
 
-    def _forward_vae(self, img: torch.Tensor, num_batches: int,
-                     ) -> torch.Tensor:
-        """Forward vae."""
-        latents = [
-            self.vae.encode(
-                img[i : i + self.vae_batch_size],
-            ).latents for i in range(
-                0, num_batches, self.vae_batch_size)
-        ]
-        return torch.cat(latents, dim=0)
-
     def forward(
             self,
             inputs: dict,
@@ -378,7 +366,7 @@ class StableCascade(BaseModel):
             truncation=True,
             return_tensors="pt")
 
-        latents = self._forward_vae(inputs["img"], num_batches)
+        latents = self.effnet(inputs["img"])
 
         noise = self.noise_generator(latents)
 
@@ -389,24 +377,27 @@ class StableCascade(BaseModel):
 
         text_encoder_output = self.text_encoder(
             inputs_text.input_ids.to(self.device),
-            attention_mask=inputs_text.attention_mask.to(self.device))
+            attention_mask=inputs_text.attention_mask.to(self.device),
+            output_hidden_states=True)
+        prompt_embeds = text_encoder_output.hidden_states[-1]
         prompt_embeds_pooled = text_encoder_output.text_embeds.unsqueeze(1)
 
-        image_embeds = self.effnet(inputs["effnet"])
         # random zeros image embeddings
+        clip_image_embeds = self.image_encoder(inputs["clip_img"]).image_embeds
         mask = torch.multinomial(
             torch.Tensor([
                 self.zeros_image_embeddings_prob,
                 1 - self.zeros_image_embeddings_prob,
             ]),
-            len(image_embeds),
-            replacement=True).to(image_embeds)
-        image_embeds = (image_embeds * mask.view(-1, 1)).view(num_batches, 1, 1, -1)
+            len(clip_image_embeds),
+            replacement=True).to(clip_image_embeds)
+        clip_image_embeds = (clip_image_embeds * mask.view(-1, 1)).view(num_batches, 1, 1, -1)
 
-        model_pred = self.decoder(
+        model_pred = self.prior(
             noisy_latents,
             timesteps,
             clip_text_pooled=prompt_embeds_pooled,
-            effnet=image_embeds)
+            clip_text=prompt_embeds,
+            clip_img=clip_image_embeds)
 
         return self.loss(model_pred, noise, timesteps)

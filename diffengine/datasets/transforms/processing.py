@@ -6,6 +6,7 @@ import torchvision
 from mmengine.dataset.base_dataset import Compose
 from torchvision.transforms.functional import crop
 from torchvision.transforms.transforms import InterpolationMode
+from transformers import CLIPImageProcessor as HFCLIPImageProcessor
 
 from diffengine.datasets.transforms.base import BaseTransform
 
@@ -381,4 +382,42 @@ class RandomHorizontalFlip(BaseTransform):
             results[k] = components[k]
         if "crop_top_left" in results:
             results["crop_top_left"] = crop_top_left
+        return results
+
+
+@TRANSFORMS.register_module()
+class CLIPImageProcessor(BaseTransform):
+    """CLIPImageProcessor.
+
+    Args:
+    ----
+        key (str): `key` to apply augmentation from results. Defaults to 'img'.
+        output_key (str): `output_key` after applying augmentation from
+            results. Defaults to 'clip_img'.
+    """
+
+    def __init__(self, key: str = "img",
+                 output_key: str = "clip_img",
+                 pretrained: str | None = None,
+                 subfolder: str | None = None) -> None:
+        self.key = key
+        self.output_key = output_key
+        if pretrained is None:
+            self.pipeline = HFCLIPImageProcessor()
+        else:
+            self.pipeline = HFCLIPImageProcessor.from_pretrained(
+                pretrained, subfolder=subfolder)
+
+    def transform(self, results: dict) -> dict | tuple[list, list] | None:
+        """Transform.
+
+        Args:
+        ----
+            results (dict): The result dict.
+        """
+        assert not isinstance(results[self.key], list), (
+            "CLIPImageProcessor only support single image.")
+        # (1, 3, 224, 224) -> (3, 224, 224)
+        results[self.output_key] = self.pipeline(
+            images=results[self.key], return_tensors="pt").pixel_values[0]
         return results

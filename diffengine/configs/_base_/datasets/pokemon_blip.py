@@ -7,20 +7,26 @@ from diffengine.datasets.transforms import (
     RandomCrop,
     RandomHorizontalFlip,
     TorchVisonTransformWrapper,
+    CLIPImageProcessor,
+    RandomTextDrop,
 )
 from diffengine.engine.hooks import SDCheckpointHook, VisualizationHook
 
 train_pipeline = [
+    dict(type=CLIPImageProcessor),
+    dict(type=RandomTextDrop, p=0.05),
     dict(type=TorchVisonTransformWrapper,
          transform=torchvision.transforms.Resize,
-         size=512, interpolation="bilinear"),
-    dict(type=RandomCrop, size=512),
+         size=768, interpolation="bilinear"),
+    dict(type=RandomCrop, size=768),
     dict(type=RandomHorizontalFlip, p=0.5),
     dict(type=TorchVisonTransformWrapper,
          transform=torchvision.transforms.ToTensor),
     dict(type=TorchVisonTransformWrapper,
-         transform=torchvision.transforms.Normalize, mean=[0.5], std=[0.5]),
-    dict(type=PackInputs),
+         transform=torchvision.transforms.Normalize,
+         mean=[0.485, 0.456, 0.406],
+         std=[0.229, 0.224, 0.225]),
+    dict(type=PackInputs, input_keys=["img", "text", "clip_img"]),
 ]
 train_dataloader = dict(
     batch_size=4,

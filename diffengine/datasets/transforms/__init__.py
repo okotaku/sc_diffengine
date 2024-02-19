@@ -9,6 +9,7 @@ from .processing import (
     RandomCrop,
     RandomHorizontalFlip,
     TorchVisonTransformWrapper,
+    CLIPImageProcessor,
 )
 from .text_processing import AddConstantCaption, RandomTextDrop
 from .wrappers import RandomChoice
@@ -29,4 +30,5 @@ __all__ = [
     "AddConstantCaption",
     "DumpMaskedImage",
     "TorchVisonTransformWrapper",
+    "CLIPImageProcessor",
 ]

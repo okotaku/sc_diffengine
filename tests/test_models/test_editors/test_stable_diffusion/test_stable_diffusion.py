@@ -10,7 +10,7 @@ from transformers import CLIPTextModel, CLIPTokenizer
 
 from diffengine.models.editors import StableCascade
 from diffengine.models.editors.stable_cascade.data_preprocessor import (
-    SDDataPreprocessor,
+    SCDataPreprocessor,
 )
 from diffengine.models.losses import DeBiasEstimationLoss, L2Loss, SNRL2Loss
 
@@ -38,7 +38,7 @@ class TestStableDiffusion(TestCase):
              unet=dict(type=UNet2DConditionModel.from_pretrained,
                              pretrained_model_name_or_path=base_model,
                              subfolder="unet"),
-            data_preprocessor=dict(type=SDDataPreprocessor),
+            data_preprocessor=dict(type=SCDataPreprocessor),
             loss=dict(type=L2Loss))
 
     def test_init(self):

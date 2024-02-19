@@ -17,6 +17,7 @@ from diffengine.datasets import (
     RandomCrop,
     RandomHorizontalFlip,
     TorchVisonTransformWrapper,
+    CLIPImageProcessor,
 )
 
 
@@ -601,4 +602,32 @@ class TestMultiAspectRatioResizeCenterCrop(TestCase):
             dict(type=MultiAspectRatioResizeCenterCrop, sizes=self.sizes))
         with pytest.raises(
                 AssertionError, match="MultiAspectRatioResizeCenterCrop only"):
+            _ = trans(data)
+
+
+class TestCLIPImageProcessor(TestCase):
+
+    def test_transform(self):
+        img_path = osp.join(osp.dirname(__file__), "../../testdata/color.jpg")
+        data = {
+            "img": Image.open(img_path),
+        }
+
+        # test transform
+        trans = TRANSFORMS.build(dict(type=CLIPImageProcessor))
+        data = trans(data)
+        assert "clip_img" in data
+        assert type(data["clip_img"]) == torch.Tensor
+        assert data["clip_img"].size() == (3, 224, 224)
+
+    def test_transform_list(self):
+        img_path = osp.join(osp.dirname(__file__), "../../testdata/color.jpg")
+        data = {
+            "img": [Image.open(img_path), Image.open(img_path)],
+        }
+
+        # test transform
+        trans = TRANSFORMS.build(dict(type=CLIPImageProcessor))
+        with pytest.raises(
+                AssertionError, match="CLIPImageProcessor only support"):
             _ = trans(data)
