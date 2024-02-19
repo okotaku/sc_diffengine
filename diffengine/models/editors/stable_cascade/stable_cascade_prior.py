@@ -391,7 +391,8 @@ class StableCascadePrior(BaseModel):
             ]),
             len(clip_image_embeds),
             replacement=True).to(clip_image_embeds)
-        clip_image_embeds = (clip_image_embeds * mask.view(-1, 1)).view(num_batches, 1, 1, -1)
+        clip_image_embeds = (
+            clip_image_embeds * mask.view(-1, 1)).view(num_batches, 1, 1, -1)
 
         model_pred = self.prior(
             noisy_latents,
